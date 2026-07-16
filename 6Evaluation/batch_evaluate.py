@@ -8,7 +8,7 @@ API_URL = "https://api.dify.ai/v1/chat-messages"
 API_KEY = os.environ["DIFY_API_KEY"]
 
 INPUT_FILE = "evaluation_50.xlsx"
-OUTPUT_FILE = "results_v0.xlsx"
+OUTPUT_FILE = "results_V1.xlsx"
 
 df = pd.read_excel(
     INPUT_FILE,
@@ -17,8 +17,8 @@ df = pd.read_excel(
 )
 
 text_columns = [
-    "V0_answer",
-    "V0_notes",
+    "V1_answer",
+    "V1_notes",
     "conversation_id",
     "retriever_resources",
     "api_status"
@@ -42,7 +42,7 @@ for index, row in df.iterrows():
         "query": row["question"],
         "response_mode": "blocking",
         "conversation_id": "",
-        "user": "course-agent-eval-v0"
+        "user": "course-agent-eval-V1"
     }
 
     start = time.time()
@@ -57,7 +57,7 @@ for index, row in df.iterrows():
         response.raise_for_status()
         result = response.json()
 
-        df.at[index, "V0_answer"] = result.get("answer", "")
+        df.at[index, "V1_answer"] = result.get("answer", "")
         df.at[index, "conversation_id"] = result.get("conversation_id", "")
         df.at[index, "latency_seconds"] = round(time.time() - start, 2)
 
@@ -73,7 +73,7 @@ for index, row in df.iterrows():
 
     except Exception as error:
         df.at[index, "api_status"] = "failed"
-        df.at[index, "V0_notes"] = str(error)
+        df.at[index, "V1_notes"] = str(error)
 
     print(f"{index + 1}/{len(df)}：{row['test_id']}")
     time.sleep(1)
