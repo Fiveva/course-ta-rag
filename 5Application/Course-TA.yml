@@ -1,0 +1,271 @@
+app:
+  description: '面向课程学生的课程公告、作业规范与课程概念答疑工具。
+
+    回答基于课程知识库，并提供资料来源。'
+  icon: 🤖
+  icon_background: '#E0EAFF'
+  icon_type: emoji
+  mode: advanced-chat
+  name: Course-TA
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/zhipuai:0.0.31@f831151a87ce15549ed800433bacd1cf366750569ceeba280bd2061db12ac3d7
+    version: null
+kind: app
+version: 0.6.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        attachment_image_file_size_limit: 2
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        file_upload_limit: 50
+        image_file_batch_limit: 10
+        image_file_size_limit: 10
+        single_chunk_attachment_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        sourceType: llm
+        targetType: answer
+      id: llm-answer
+      selected: false
+      source: llm
+      sourceHandle: source
+      target: answer
+      targetHandle: target
+      type: custom
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: knowledge-retrieval
+      id: 1784120815390-source-1784120911726-target
+      selected: false
+      source: '1784120815390'
+      sourceHandle: source
+      target: '1784120911726'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: knowledge-retrieval
+        targetType: llm
+      id: 1784120911726-source-llm-target
+      selected: false
+      source: '1784120911726'
+      sourceHandle: source
+      target: llm
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        selected: false
+        title: 用户输入
+        type: start
+        variables: []
+      height: 72
+      id: '1784120815390'
+      position:
+        x: 80
+        y: 282
+      positionAbsolute:
+        x: 80
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - '1784120911726'
+          - result
+        memory:
+          query_prompt_template: '用户问题：{{#sys.query#}}
+
+            知识库检索结果：{{#1784120911726.result#}}'
+          role_prefix:
+            assistant: ''
+            user: ''
+          window:
+            enabled: false
+            size: 10
+        model:
+          completion_params:
+            temperature: 0.3
+          mode: chat
+          name: glm-4.5-air
+          provider: langgenius/zhipuai/zhipuai
+        prompt_template:
+        - id: 6c59b3c0-20e6-4809-87ab-836c72778899
+          role: system
+          text: '你是 TOSS2026 “Causal Reasoning”课程的知识库与答疑助手。
+
+
+            请根据提供的课程知识库内容回答用户问题。
+
+
+            回答规则：
+
+            1. 只能依据知识库内容回答课程公告、作业规范和课程概念问题。
+
+            2. 优先直接回答用户问题，再补充必要说明。
+
+            3. 不要编造知识库中没有的信息。
+
+            4. 如果知识库没有提供充分依据，明确说明“当前课程资料中没有找到可靠依据”，并建议用户通过课程官方渠道联系助教。
+
+            5. 不要返回已脱敏的姓名、邮箱或其他个人信息。
+
+            6. 不查询、推断或披露学生成绩和个人作业反馈。
+
+            7. 如果用户要求直接提供需要提交的作业答案，拒绝直接作答，但可以解释知识点、提供解题提示或检查用户已有思路。
+
+            8. 注意通知的课程实例和时间，不要把 TOSS2026 的安排推广到其他课程或学期。
+
+            9. 回答保持简洁、清晰，优先使用中文。
+
+
+            建议回答格式：
+
+
+            [直接回答]
+
+
+            补充说明（如有）
+
+
+            来源：
+
+            - 文档标题
+
+            - 发布渠道
+
+            - 发布时间或课件页码'
+        selected: false
+        title: LLM
+        type: llm
+        vision:
+          enabled: false
+      height: 87
+      id: llm
+      position:
+        x: 737
+        y: 303
+      positionAbsolute:
+        x: 737
+        y: 303
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        answer: '{{#llm.text#}}'
+        selected: false
+        title: 直接回复
+        type: answer
+        variables: []
+      height: 102
+      id: answer
+      position:
+        x: 1075
+        y: 303
+      positionAbsolute:
+        x: 1075
+        y: 303
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        dataset_ids:
+        - mwhn06A+DYN1FjzHB9tZww0VAZmVHbb19ZWf8zfHRdvs9w539E/WXgJ3bJ/N1U5Y
+        multiple_retrieval_config:
+          reranking_enable: false
+          reranking_mode: weighted_score
+          score_threshold: null
+          top_k: 3
+          weights:
+            keyword_setting:
+              keyword_weight: 0
+            vector_setting:
+              embedding_model_name: embedding-2
+              embedding_provider_name: langgenius/zhipuai/zhipuai
+              vector_weight: 1
+            weight_type: customized
+        query_attachment_selector: []
+        query_variable_selector:
+        - '1784120815390'
+        - sys.query
+        retrieval_mode: multiple
+        selected: true
+        title: 知识检索
+        type: knowledge-retrieval
+      height: 89
+      id: '1784120911726'
+      position:
+        x: 399
+        y: 303
+      positionAbsolute:
+        x: 399
+        y: 303
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    viewport:
+      x: 51.92596919530081
+      y: 75.00728405380357
+      zoom: 0.8333333333333334
+  rag_pipeline_variables: []
